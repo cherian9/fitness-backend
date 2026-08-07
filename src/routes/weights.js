@@ -3,9 +3,12 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    getWeights
+    getWeights,
+    addWeight
 } = require("../controllers/weightController");
 
 router.get("/", getWeights);
 
-module.exports = router;
+router.post("/", addWeight);
+
+module.exports = router; 
