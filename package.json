@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/cherian9/fitness-backend#readme",
   "dependencies": {
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "pg": "^8.22.0"
   }
