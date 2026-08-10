@@ -109,6 +109,20 @@ const deleteWeight = async (req, res, next) => {
     next(error);
       }
 }
+
+const getWeightsByUserId = async (req, res, next) => {
+    try {
+        const userId = Number(req.params.userId);
+
+        const weights = await weightService.getWeightsByUserId(userId);
+
+        res.status(200).json(weights);
+
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+};
     
 
 
@@ -117,5 +131,6 @@ module.exports = {
     addWeight,
     getWeightbyId,
     updateWeight,
-    deleteWeight
+    deleteWeight,
+    getWeightsByUserId
 };

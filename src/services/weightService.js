@@ -26,14 +26,14 @@ const getAllWeights = async () => {
 
 const addWeight = async (weight,date, userId) => {
     try {
-        if(!weight || !date)
+        if(!weight || !date || userId === undefined)
         {
-            const error = new Error("Weight and date must be required");
+            const error = new Error("Weight and date and user_id must be required");
             error.statusCode = 400;
             throw error;
 
         }
-        if(typeof weight !=='number')
+        if(typeof weight !== 'number')
             {
                const error = new Error("Weight must be correct number");
                error.statusCode = 400;
@@ -152,11 +152,30 @@ const deleteWeight = async (id) => {
     }
 }
 
+const getWeightsByUserId = async (userId) => {
+    try {
+        const result = await pool.query(
+            `SELECT *
+             FROM weights
+             WHERE user_id = $1
+             ORDER BY date ASC`,
+            [userId]
+        );
+
+        return result.rows;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 module.exports = {
     getAllWeights,
     addWeight,
     getWeightbyId,
     updateWeight,
-    deleteWeight
+    deleteWeight,
+    getWeightsByUserId
+
 };
