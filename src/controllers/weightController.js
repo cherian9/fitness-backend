@@ -1,4 +1,4 @@
-let weights = [
+/*let weights = [
         {
             id: 1,
             weight: 75.4,
@@ -10,77 +10,112 @@ let weights = [
             date: "2026-08-06"
         }
     ];
-const pool = require("../config/db");
+*/
+const weightService = require("../services/weightService");
 
-const getWeights = async (req, res) => {
+const getWeights = async (req, res,next) => {
 
     try {
 
-        const result = await pool.query(
-            "SELECT * FROM weights ORDER BY id ASC"
-        );
+        const weights = await weightService.getAllWeights();
 
-        res.json(result.rows);
+        res.json(weights);
 
     } catch (error) {
 
         console.error(error);
 
-        res.status(500).json({
-            message: "Database error"
-        });
+        next(error);
 
     }
 
 };
 
 
-const addWeight = async (req, res) => {
+const addWeight = async (req, res, next) => {
 
     try {
 
-        const { weight, date } = req.body;
+        const { weight, date , userId } = req.body;
 
-        if (!weight || !date) {
-            return res.status(400).json({
-                message: "Weight and date are required."
-            });
-        }
+        const newWeight = await weightService.addWeight(weight,date, userId);
 
-        if (typeof weight !== "number") {
-            return res.status(400).json({
-                message: "Weight must be a number."
-            });
-        }
-
-        if (weight <= 0) {
-            return res.status(400).json({
-                message: "Weight must be greater than zero."
-            });
-        }
-
-        const result = await pool.query(
-            `INSERT INTO weights (weight, date)
-             VALUES ($1, $2)
-             RETURNING *`,
-            [weight, date]
-        );
-
-        res.status(201).json(result.rows[0]);
+        res.status(201).json(newWeight);
 
     } catch (error) {
 
         console.error(error);
 
-        res.status(500).json({
-            message: "Database error"
-        });
+        next(error);
 
     }
 
 };
+
+
+const getWeightbyId = async (req,res,next) => {
+    try {
+        const id = Number(req.params.id);
+        const weight = await weightService.getWeightbyId(id);
+        res.json(weight);
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        next(error);
+
+    }
+}
+//get weight by id 
+// changed it to number since we get string request 
+
+
+const updateWeight = async (req,res, next) => {
+    try {
+        const id = Number(req.params.id);
+
+        const { weight,date } = req.body;
+
+        const newWeight = await weightService.updateWeight(id,weight,date);
+
+        res.status(200).json(newWeight);
+    }
+    catch(error)
+    {
+        console.error(error);
+        
+        next(error);
+
+
+    }
+}
+
+const deleteWeight = async (req, res, next) => {
+    try {
+        const id = Number(req.params.id);
+
+        const result = await weightService.deleteWeight(id);
+
+        res.status(200).json(result)
+
+        }
+
+    
+       catch (error) {
+    console.error(error);
+
+    next(error);
+      }
+}
+    
+
 
 module.exports = {
     getWeights,
-    addWeight
+    addWeight,
+    getWeightbyId,
+    updateWeight,
+    deleteWeight
 };
