@@ -5,7 +5,7 @@ const pool = require("../config/db");
 const getAllWeights = async () => {
     try {
         const result = await pool.query(
-            "SELECT * FROM weights ORDER BY id ASC"
+            "SELECT id, weight::float8, date, user_id FROM weights ORDER BY id ASC"
         );
        if (result.rows.length === 0) {
 
@@ -45,8 +45,13 @@ const addWeight = async (weight,date, userId) => {
                error.statusCode = 400;
                 throw error;
             }
+
+            const formattedDate = new Date(date)
+            .toISOString()
+            .split("T")[0];
+
         const result = await pool.query(
-            'INSERT INTO weights(weight,date,user_id) VALUES ($1,$2,$3) RETURNING *',[weight,date,userId]);
+            'INSERT INTO weights(weight,date,user_id) VALUES ($1,$2,$3) RETURNING id, weight::float8, date, user_id',[weight,date,userId]);
         
          if (result.rows.length === 0) {
 

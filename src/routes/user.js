@@ -8,4 +8,10 @@ const {
 
 router.get("/:userId/weights", getWeightsByUserId);
 
+const {
+    getUsers
+} = require("../controllers/userController");
+
+router.get("/", getUsers);
+
 module.exports = router;

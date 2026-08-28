@@ -36,6 +36,8 @@ const addWeight = async (req, res, next) => {
 
     try {
 
+        console.log("POST /weights body:", req.body);
+
         const { weight, date , userId } = req.body;
 
         const newWeight = await weightService.addWeight(weight,date, userId);
