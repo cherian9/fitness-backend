@@ -3,6 +3,7 @@ const express = require("express");
 const weightRoutes = require("./routes/weights");
 const userRoutes = require("./routes/user.js");
 
+
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
