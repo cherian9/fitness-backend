@@ -2,10 +2,14 @@ const pool = require("../config/db");
 //const { deleteWeight } = require("../controllers/weightController");
 //const { updateWeight } = require("../controllers/weightController");
 //the sql part of the program
-const getAllWeights = async () => {
+const getAllWeights = async (userId) => {
     try {
         const result = await pool.query(
-            "SELECT id, weight::float8, date, user_id FROM weights ORDER BY id ASC"
+            `SELECT *
+             FROM weights
+             WHERE user_id = $1
+             ORDER BY date ASC`,
+            [userId]
         );
        if (result.rows.length === 0) {
 
@@ -93,7 +97,7 @@ const getWeightbyId = async ( id ) => {
 }
 
 
-const updateWeight =  async ( id, weight, date ) => {
+const updateWeight =  async ( id, weight, date, userId ) => {
     try {
         if(!weight || !date)
             {
@@ -120,8 +124,8 @@ const updateWeight =  async ( id, weight, date ) => {
             }
 
         const result = await pool.query(
-            "UPDATE weights SET weight =$2 , date = $3 WHERE id = $1 RETURNING *",
-            [id,weight,date]
+            "UPDATE weights SET weight =$2 , date = $3 WHERE id = $1 AND  user_id = $4 RETURNING *",
+            [id,weight,date,userId]
         );
 
         if(result.rows.length===0)
@@ -140,11 +144,11 @@ const updateWeight =  async ( id, weight, date ) => {
 }
 
 
-const deleteWeight = async (id) => {
+const deleteWeight = async (id, userId) => {
     try{
         const result = await pool.query(
-            "DELETE FROM weights WHERE ID = $1 RETURNING *",
-            [id]);
+            "DELETE FROM weights WHERE ID = $1 AND user_id = $2 RETURNING *",
+            [id, userId]);
         if (result.rows.length === 0) {
     const error = new Error("Weight not found");
     error.statusCode = 404;

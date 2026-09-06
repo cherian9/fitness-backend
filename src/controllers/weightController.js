@@ -17,7 +17,9 @@ const getWeights = async (req, res,next) => {
 
     try {
 
-        const weights = await weightService.getAllWeights();
+        const userId = req.user.userId;
+
+        const weights = await weightService.getAllWeights(userId);
 
         res.json(weights);
 
@@ -38,7 +40,9 @@ const addWeight = async (req, res, next) => {
 
         console.log("POST /weights body:", req.body);
 
-        const { weight, date , userId } = req.body;
+        const { weight, date } = req.body;
+
+        const userId = req.user.userId;
 
         const newWeight = await weightService.addWeight(weight,date, userId);
 
@@ -80,7 +84,9 @@ const updateWeight = async (req,res, next) => {
 
         const { weight,date } = req.body;
 
-        const newWeight = await weightService.updateWeight(id,weight,date);
+        const userId = req.user.userId;
+
+        const newWeight = await weightService.updateWeight(id,weight,date,userId);
 
         res.status(200).json(newWeight);
     }
@@ -98,7 +104,9 @@ const deleteWeight = async (req, res, next) => {
     try {
         const id = Number(req.params.id);
 
-        const result = await weightService.deleteWeight(id);
+        const userId = req.user.userId;
+
+        const result = await weightService.deleteWeight(id, userId);
 
         res.status(200).json(result)
 

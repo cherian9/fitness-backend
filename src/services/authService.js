@@ -78,6 +78,13 @@ const passwordMatch = await bcrypt.compare(
         throw error;
     }
 
+    const token = jwt.sign(
+        {
+        userId :result.rows[0].id,
+    },
+    process.env.JWT_SECRET
+    );
+
    
 
         const user = result.rows[0];
@@ -85,7 +92,8 @@ const passwordMatch = await bcrypt.compare(
 return {
     id: user.id,
     name: user.name,
-    email: user.email
+    email: user.email,
+    token
 };
 
     

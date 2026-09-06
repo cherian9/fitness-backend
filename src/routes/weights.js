@@ -9,15 +9,16 @@ const {
     updateWeight,
     deleteWeight
 } = require("../controllers/weightController");
+const { authenticateToken } = require("../middleware/authMiddleware");
 
-router.get("/", getWeights);
+router.get("/", authenticateToken , getWeights);
 
-router.post("/", addWeight);
+router.post("/", authenticateToken, addWeight);
 
 router.get("/:id", getWeightbyId);
 
-router.put("/:id",updateWeight);
+router.put("/:id", authenticateToken, updateWeight);
 
-router.delete("/:id",deleteWeight);
+router.delete("/:id", authenticateToken, deleteWeight);
 
 module.exports = router; 
